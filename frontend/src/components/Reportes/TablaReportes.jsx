@@ -1,4 +1,5 @@
-import { layoutClasses } from "../../utils/tailwindClasses";
+import { layoutClasses, buttonClasses } from "../../utils/tailwindClasses";
+import { printSection } from "../../utils/print";
 
 const TablaReportes = ({ movimientos }) => {
   const formatFecha = (fecha) => {
@@ -15,11 +16,23 @@ const TablaReportes = ({ movimientos }) => {
 
   return (
     <div
+      id="print-reportes"
       className={`${layoutClasses.card} bg-green-50 border border-green-200`}
     >
-      <h3 className="text-lg font-semibold text-green-800 mb-4">
-        Movimientos Recientes
-      </h3>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-green-800">
+          Movimientos Recientes
+        </h3>
+        <button
+          type="button"
+          onClick={() =>
+            printSection("print-reportes", "Movimientos Recientes")
+          }
+          className={`${buttonClasses.secondary} text-sm no-print`}
+        >
+          Imprimir
+        </button>
+      </div>
 
       <div className={layoutClasses.tableContainer}>
         <table className={layoutClasses.table}>

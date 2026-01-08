@@ -2,15 +2,16 @@ const StockBajo = ({ stockBajo, onPrint }) => {
   return (
     <div className="card bg-yellow-50 border border-yellow-200">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-yellow-800">Materiales con Stock Bajo</h3>
-        <button
-          onClick={onPrint}
-          className="btn-danger text-sm"
-        >
-          Imprimir
-        </button>
+        <h3 className="text-lg font-semibold text-yellow-800">
+          Materiales con Stock Bajo
+        </h3>
+        {typeof onPrint === "function" && (
+          <button onClick={onPrint} className="btn-danger text-sm no-print">
+            Imprimir
+          </button>
+        )}
       </div>
-      
+
       {stockBajo.length > 0 ? (
         <div className="table-container">
           <table className="table">

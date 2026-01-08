@@ -1,38 +1,39 @@
-import { useState, useEffect } from 'react';
-import { reportesService, materialesService } from '../../services/api';
-import FiltrosReportes from './FiltrosReportes';
-import StockBajo from './StockBajo';
-import TablaReportes from './TablaReportes';
+import { useState, useEffect } from "react";
+import { reportesService, materialesService } from "../../services/api";
+import FiltrosReportes from "./FiltrosReportes";
+import StockBajo from "./StockBajo";
+import TablaReportes from "./TablaReportes";
+import { printSection } from "../../utils/print";
 
 const Reportes = () => {
   const [stockBajo, setStockBajo] = useState([]);
   const [movimientos, setMovimientos] = useState([]);
   const [materiales, setMateriales] = useState([]);
   const [filtros, setFiltros] = useState({
-    fecha_inicio: '',
-    fecha_fin: '',
-    tipo_movimiento: '',
-    material: '',
-    marca: '',
-    uso: '',
+    fecha_inicio: "",
+    fecha_fin: "",
+    tipo_movimiento: "",
+    material: "",
+    marca: "",
+    uso: "",
   });
   const [loading, setLoading] = useState(true);
 
   const cargarDatos = async (params = {}) => {
     try {
       setLoading(true);
-      
+
       const [stockRes, movRes, matRes] = await Promise.all([
         reportesService.getStockBajo(),
         reportesService.getMovimientosFiltrados(params),
-        materialesService.getAll()
+        materialesService.getAll(),
       ]);
-      
+
       setStockBajo(stockRes.data);
       setMovimientos(movRes.data);
       setMateriales(matRes.data);
     } catch (err) {
-      console.error('Error al cargar reportes:', err);
+      console.error("Error al cargar reportes:", err);
     } finally {
       setLoading(false);
     }
@@ -44,39 +45,31 @@ const Reportes = () => {
 
   const handleFiltrar = (nuevosFiltros) => {
     setFiltros(nuevosFiltros);
-    
+
     // Convertir filtros a query params
     const params = {};
     Object.entries(nuevosFiltros).forEach(([key, value]) => {
       if (value) params[key] = value;
     });
-    
+
     cargarDatos(params);
   };
 
   const handleLimpiar = () => {
     const filtrosVacios = {
-      fecha_inicio: '',
-      fecha_fin: '',
-      tipo_movimiento: '',
-      material: '',
-      marca: '',
-      uso: '',
+      fecha_inicio: "",
+      fecha_fin: "",
+      tipo_movimiento: "",
+      material: "",
+      marca: "",
+      uso: "",
     };
-    
+
     setFiltros(filtrosVacios);
     cargarDatos();
   };
 
-  const printSection = (sectionId) => {
-    const printContents = document.getElementById(sectionId).innerHTML;
-    const originalContents = document.body.innerHTML;
-    
-    document.body.innerHTML = printContents;
-    window.print();
-    document.body.innerHTML = originalContents;
-    window.location.reload();
-  };
+  // Usar utilidad centralizada de impresión
 
   if (loading) {
     return (
@@ -96,14 +89,17 @@ const Reportes = () => {
           materiales={materiales}
           onFiltrar={handleFiltrar}
           onLimpiar={handleLimpiar}
-          onPrint={() => printSection('movimientos-section')}
+          onPrint={() => printSection("movimientos-section")}
         />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1">
           <div id="stock-bajo-section">
-            <StockBajo stockBajo={stockBajo} onPrint={() => printSection('stock-bajo-section')} />
+            <StockBajo
+              stockBajo={stockBajo}
+              onPrint={() => printSection("stock-bajo-section")}
+            />
           </div>
         </div>
 

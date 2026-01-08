@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
-import { materialesService } from '../../services/api';
-import AgregarMaterial from './AgregarMaterial';
-import TablaMateriales from './TablaMateriales';
+import { useState, useEffect } from "react";
+import { materialesService } from "../../services/api";
+import AgregarMaterial from "./AgregarMaterial";
+import TablaMateriales from "./TablaMateriales";
+import { printSection } from "../../utils/print";
 
 const Materiales = () => {
   const [materiales, setMateriales] = useState([]);
@@ -15,7 +16,7 @@ const Materiales = () => {
       setMateriales(response.data);
       setError(null);
     } catch (err) {
-      setError('Error al cargar materiales');
+      setError("Error al cargar materiales");
       console.error(err);
     } finally {
       setLoading(false);
@@ -27,16 +28,20 @@ const Materiales = () => {
   }, []);
 
   const handleEliminar = async (id) => {
-    if (!window.confirm('¿Seguro que deseas eliminar este material? NO HAY VUELTA ATRÁS')) {
+    if (
+      !window.confirm(
+        "¿Seguro que deseas eliminar este material? NO HAY VUELTA ATRÁS"
+      )
+    ) {
       return;
     }
 
     try {
       await materialesService.delete(id);
-      alert('Material eliminado correctamente');
+      alert("Material eliminado correctamente");
       cargarMateriales();
     } catch (err) {
-      alert('Error al eliminar material');
+      alert("Error al eliminar material");
       console.error(err);
     }
   };
@@ -52,7 +57,7 @@ const Materiales = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Gestión de Materiales</h2>
-      
+
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
           {error}
@@ -62,7 +67,9 @@ const Materiales = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div>
           <div className="card mb-6">
-            <h3 className="text-lg font-semibold mb-4">Agregar Nuevo Material</h3>
+            <h3 className="text-lg font-semibold mb-4">
+              Agregar Nuevo Material
+            </h3>
             <AgregarMaterial onSuccess={cargarMateriales} />
           </div>
         </div>
@@ -72,17 +79,19 @@ const Materiales = () => {
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Inventario Actual</h3>
               <button
-                onClick={() => window.print()}
+                onClick={() => printSection("print-materiales", "Inventario")}
                 className="btn-secondary no-print"
               >
                 Imprimir Inventario
               </button>
             </div>
-            
-            <TablaMateriales 
-              materiales={materiales} 
-              onEliminar={handleEliminar}
-            />
+
+            <div id="print-materiales">
+              <TablaMateriales
+                materiales={materiales}
+                onEliminar={handleEliminar}
+              />
+            </div>
           </div>
         </div>
       </div>
