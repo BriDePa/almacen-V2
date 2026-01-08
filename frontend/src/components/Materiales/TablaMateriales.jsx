@@ -52,14 +52,6 @@ const TablaMateriales = ({ materiales, onEliminar }) => {
           ))}
         </tbody>
       </table>
-
-      <style jsx>{`
-        @media print {
-          .no-print {
-            display: none !important;
-          }
-        }
-      `}</style>
     </div>
   );
 };

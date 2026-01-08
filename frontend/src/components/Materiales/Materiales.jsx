@@ -86,14 +86,6 @@ const Materiales = () => {
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @media print {
-          .no-print {
-            display: none !important;
-          }
-        }
-      `}</style>
     </div>
   );
 };
