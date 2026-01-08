@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
-import Navbar from './Navbar';
+import { useState, useEffect } from "react";
+import Navbar from "./Navbar";
+import { layoutClasses } from "../../utils/tailwindClasses";
 
 const Layout = ({ children }) => {
   const [messages, setMessages] = useState([]);
@@ -10,29 +11,30 @@ const Layout = ({ children }) => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white text-gray-800">
       <Navbar />
-      
-      <div className="container mx-auto px-4 py-6">
+
+      <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Sistema de mensajes flash */}
         {messages.length > 0 && (
-          <div className="mb-6 space-y-2">
+          <div className="mb-6 space-y-3">
             {messages.map((msg, index) => (
               <div
                 key={index}
-                className={`p-4 rounded-md ${
-                  msg.type === 'success' ? 'bg-green-100 text-green-800' :
-                  msg.type === 'error' ? 'bg-red-100 text-red-800' :
-                  'bg-blue-100 text-blue-800'
+                className={`flex items-start gap-3 p-4 rounded-lg shadow-sm border-l-4 ${
+                  msg.type === "success"
+                    ? "bg-green-50 border-green-400 text-green-800"
+                    : msg.type === "error"
+                    ? "bg-red-50 border-red-400 text-red-800"
+                    : "bg-blue-50 border-blue-400 text-blue-800"
                 }`}
               >
-                {msg.text}
+                <div className="flex-1 text-sm">{msg.text}</div>
               </div>
             ))}
           </div>
         )}
-        
-        {children}
+        <main className="space-y-6">{children}</main>
       </div>
     </div>
   );
