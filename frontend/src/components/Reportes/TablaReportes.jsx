@@ -20,18 +20,7 @@ const TablaReportes = ({ movimientos }) => {
       className={`${layoutClasses.card} bg-green-50 border border-green-200`}
     >
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-green-800">
-          Movimientos Recientes
-        </h3>
-        <button
-          type="button"
-          onClick={() =>
-            printSection("print-reportes", "Movimientos Recientes")
-          }
-          className={`${buttonClasses.secondary} text-sm no-print`}
-        >
-          Imprimir
-        </button>
+        <h3 className="text-lg font-semibold text-green-800">Movimientos Recientes</h3>
       </div>
 
       <div className={layoutClasses.tableContainer}>

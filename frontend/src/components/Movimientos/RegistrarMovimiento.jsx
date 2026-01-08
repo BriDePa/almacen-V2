@@ -14,6 +14,7 @@ const RegistrarMovimiento = ({ materiales, onSuccess }) => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,6 +35,22 @@ const RegistrarMovimiento = ({ materiales, onSuccess }) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setFieldErrors({});
+
+    // Validación cliente básica
+    const newFieldErrors = {};
+    if (!formData.id_material) newFieldErrors.id_material = 'Seleccione un material';
+    const cantidadVal = parseFloat(formData.cantidad);
+    if (!formData.cantidad || isNaN(cantidadVal) || cantidadVal <= 0) newFieldErrors.cantidad = 'Ingrese una cantidad mayor a 0';
+    if (!formData.responsable || formData.responsable.trim().length < 2) newFieldErrors.responsable = 'Ingrese el nombre del responsable';
+    if (!formData.proyecto_destino || formData.proyecto_destino.trim().length < 2) newFieldErrors.proyecto_destino = 'Ingrese proyecto/área destino';
+
+    if (Object.keys(newFieldErrors).length > 0) {
+      setFieldErrors(newFieldErrors);
+      setError('Corrija los errores del formulario');
+      setLoading(false);
+      return;
+    }
 
     try {
       await movimientosService.create({
@@ -56,9 +73,31 @@ const RegistrarMovimiento = ({ materiales, onSuccess }) => {
       // Notificar al componente padre
       if (onSuccess) onSuccess();
     } catch (err) {
-      const errorMsg =
-        err.response?.data?.error || "Error al registrar movimiento";
-      setError(errorMsg);
+      // Manejo de errores más específico
+      if (err.response) {
+        const status = err.response.status;
+        const data = err.response.data || {};
+
+        // Validación del servidor: estructura { errors: { field: msg } }
+        if (data.errors && typeof data.errors === 'object') {
+          setFieldErrors(data.errors);
+          setError('Errores de validación en el servidor');
+        } else if (data.error) {
+          setError(data.error);
+        } else if (data.message) {
+          setError(data.message);
+        } else if (status === 409) {
+          setError('Conflicto: posible falta de stock para la salida. Verificar cantidad.');
+        } else if (status >= 400 && status < 500) {
+          setError('Solicitud inválida. Revise los datos e intente nuevamente.');
+        } else {
+          setError('Error del servidor al registrar movimiento');
+        }
+      } else if (err.request) {
+        setError('No se recibió respuesta del servidor. Verifique su conexión.');
+      } else {
+        setError('Error al preparar la solicitud: ' + (err.message || 'desconocido'));
+      }
     } finally {
       setLoading(false);
     }
@@ -89,6 +128,9 @@ const RegistrarMovimiento = ({ materiales, onSuccess }) => {
               </option>
             ))}
           </select>
+            {fieldErrors.id_material && (
+              <p className="text-sm text-red-600 mt-1">{fieldErrors.id_material}</p>
+            )}
         </div>
 
         <div>
@@ -131,6 +173,9 @@ const RegistrarMovimiento = ({ materiales, onSuccess }) => {
             step="0.01"
             required
           />
+          {fieldErrors.cantidad && (
+            <p className="text-sm text-red-600 mt-1">{fieldErrors.cantidad}</p>
+          )}
         </div>
 
         <div>
@@ -143,6 +188,9 @@ const RegistrarMovimiento = ({ materiales, onSuccess }) => {
             className={formClasses.input}
             required
           />
+          {fieldErrors.responsable && (
+            <p className="text-sm text-red-600 mt-1">{fieldErrors.responsable}</p>
+          )}
         </div>
 
         <div>
@@ -155,6 +203,9 @@ const RegistrarMovimiento = ({ materiales, onSuccess }) => {
             className={formClasses.input}
             required
           />
+          {fieldErrors.proyecto_destino && (
+            <p className="text-sm text-red-600 mt-1">{fieldErrors.proyecto_destino}</p>
+          )}
         </div>
 
         <div>
