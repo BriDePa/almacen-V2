@@ -39,15 +39,22 @@ const RegistrarMovimiento = ({ materiales, onSuccess }) => {
 
     // Validación cliente básica
     const newFieldErrors = {};
-    if (!formData.id_material) newFieldErrors.id_material = 'Seleccione un material';
+    if (!formData.id_material)
+      newFieldErrors.id_material = "Seleccione un material";
     const cantidadVal = parseFloat(formData.cantidad);
-    if (!formData.cantidad || isNaN(cantidadVal) || cantidadVal <= 0) newFieldErrors.cantidad = 'Ingrese una cantidad mayor a 0';
-    if (!formData.responsable || formData.responsable.trim().length < 2) newFieldErrors.responsable = 'Ingrese el nombre del responsable';
-    if (!formData.proyecto_destino || formData.proyecto_destino.trim().length < 2) newFieldErrors.proyecto_destino = 'Ingrese proyecto/área destino';
+    if (!formData.cantidad || isNaN(cantidadVal) || cantidadVal <= 0)
+      newFieldErrors.cantidad = "Ingrese una cantidad mayor a 0";
+    if (!formData.responsable || formData.responsable.trim().length < 2)
+      newFieldErrors.responsable = "Ingrese el nombre del responsable";
+    if (
+      !formData.proyecto_destino ||
+      formData.proyecto_destino.trim().length < 2
+    )
+      newFieldErrors.proyecto_destino = "Ingrese proyecto/área destino";
 
     if (Object.keys(newFieldErrors).length > 0) {
       setFieldErrors(newFieldErrors);
-      setError('Corrija los errores del formulario');
+      setError("Corrija los errores del formulario");
       setLoading(false);
       return;
     }
@@ -79,24 +86,32 @@ const RegistrarMovimiento = ({ materiales, onSuccess }) => {
         const data = err.response.data || {};
 
         // Validación del servidor: estructura { errors: { field: msg } }
-        if (data.errors && typeof data.errors === 'object') {
+        if (data.errors && typeof data.errors === "object") {
           setFieldErrors(data.errors);
-          setError('Errores de validación en el servidor');
+          setError("Errores de validación en el servidor");
         } else if (data.error) {
           setError(data.error);
         } else if (data.message) {
           setError(data.message);
         } else if (status === 409) {
-          setError('Conflicto: posible falta de stock para la salida. Verificar cantidad.');
+          setError(
+            "Conflicto: posible falta de stock para la salida. Verificar cantidad."
+          );
         } else if (status >= 400 && status < 500) {
-          setError('Solicitud inválida. Revise los datos e intente nuevamente.');
+          setError(
+            "Solicitud inválida. Revise los datos e intente nuevamente."
+          );
         } else {
-          setError('Error del servidor al registrar movimiento');
+          setError("Error del servidor al registrar movimiento");
         }
       } else if (err.request) {
-        setError('No se recibió respuesta del servidor. Verifique su conexión.');
+        setError(
+          "No se recibió respuesta del servidor. Verifique su conexión."
+        );
       } else {
-        setError('Error al preparar la solicitud: ' + (err.message || 'desconocido'));
+        setError(
+          "Error al preparar la solicitud: " + (err.message || "desconocido")
+        );
       }
     } finally {
       setLoading(false);
@@ -128,9 +143,11 @@ const RegistrarMovimiento = ({ materiales, onSuccess }) => {
               </option>
             ))}
           </select>
-            {fieldErrors.id_material && (
-              <p className="text-sm text-red-600 mt-1">{fieldErrors.id_material}</p>
-            )}
+          {fieldErrors.id_material && (
+            <p className="text-sm text-red-600 mt-1">
+              {fieldErrors.id_material}
+            </p>
+          )}
         </div>
 
         <div>
@@ -189,7 +206,9 @@ const RegistrarMovimiento = ({ materiales, onSuccess }) => {
             required
           />
           {fieldErrors.responsable && (
-            <p className="text-sm text-red-600 mt-1">{fieldErrors.responsable}</p>
+            <p className="text-sm text-red-600 mt-1">
+              {fieldErrors.responsable}
+            </p>
           )}
         </div>
 
@@ -204,7 +223,9 @@ const RegistrarMovimiento = ({ materiales, onSuccess }) => {
             required
           />
           {fieldErrors.proyecto_destino && (
-            <p className="text-sm text-red-600 mt-1">{fieldErrors.proyecto_destino}</p>
+            <p className="text-sm text-red-600 mt-1">
+              {fieldErrors.proyecto_destino}
+            </p>
           )}
         </div>
 
