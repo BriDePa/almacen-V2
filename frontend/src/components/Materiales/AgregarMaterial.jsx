@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { materialesService } from "../../services/api";
 import { formClasses, buttonClasses } from "../../utils/tailwindClasses";
+import { UNIDADES } from "../../utils/units";
 
 const AgregarMaterial = ({ onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -115,9 +116,11 @@ const AgregarMaterial = ({ onSuccess }) => {
             className={formClasses.select}
             required
           >
-            <option value="Unidad(es)">Unidad(es)</option>
-            <option value="Kilo(s)">Kilo(s)</option>
-            <option value="Litro(s)">Litro(s)</option>
+            {UNIDADES.map((u) => (
+              <option key={u} value={u}>
+                {u}
+              </option>
+            ))}
           </select>
         </div>
 
